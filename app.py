@@ -18,19 +18,30 @@ db = SQLAlchemy(app)
 
 class Users(db.Model):
 
-    id = db.Column(db.Integer, primary_key= True)
+    id = db.Column(db.Integer, primary_key= True, autoincrement= True)
     usrName = db.Column(db.String(100), nullable= False)
     email = db.Column(db.String(100), nullable= False, unique=True)
-    dateAdded = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Create an init in order to not be making assignments all the time
+
+    def __init__(self, usrName, email):
+
+        self.usrName = usrName
+        self.email = email
+
 
     # message for when you initialized the model
 
     def __repr__(self):
-        return '<Name %r' % self.name
+        return '<Name %r' % self.usrName
     
-
+def create_db():
     with app.app_context():
         db.create_all()
+    print('Created Database!')
+    
+    
+
 
 # Index page
 
@@ -56,8 +67,13 @@ def login():
         session["user"] = name
         session["mail"] = mail
 
-        
+        # Use the data comming from the form to add it to the database
 
+        newData = Users(name, mail)
+        db.session.add(newData)
+        db.session.commit()
+
+        
 
         # Flash message saying that the log in was successful
         flash("The login was successful!")
