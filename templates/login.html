@@ -5,17 +5,27 @@
         Login page
     {% endblock %}
     {% block content %}
-        
-    <form>
-        <div class="mb-3">
-          <label for="user" class="form-label">Username:</label>
-          <input type="text" name="user" class="form-control" id="user">
-        </div>
-        <div class="mb-3">
-          <label for="mail" class="form-label">E-mail:</label>
-          <input type="email" name="mail" class="form-control" id="mail">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+
+    <!-- block to display the flashed messages -->
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            {{message}}
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form action="#" method="POST">
+          <div class="mb-3">
+            <label for="user" class="form-label">Username:</label>
+            <input type="text" name="user" class="form-control" id="user">
+          </div>
+          <div class="mb-3">
+            <label for="mail" class="form-label">E-mail:</label>
+            <input type="email" name="mail" class="form-control" id="mail">
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
 
     {% endblock %}

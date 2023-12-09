@@ -1,8 +1,36 @@
 from flask import Flask, render_template, redirect, url_for, request, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
+# Application configuration
 
+# Flask instance
 app = Flask(__name__)
+# Secret key
+app.config["SECRET_KEY"] = "anypersonalsecretkey"
+# Adding a database
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
+# Initializing database
+db = SQLAlchemy(app)
+
+
+# Creating database models
+
+class Users(db.Model):
+
+    id = db.Column(db.Integer, primary_key= True)
+    usrName = db.Column(db.String(100), nullable= False)
+    email = db.Column(db.String(100), nullable= False, unique=True)
+    dateAdded = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # message for when you initialized the model
+
+    def __repr__(self):
+        return '<Name %r' % self.name
+    
+
+    with app.app_context():
+        db.create_all()
 
 # Index page
 
@@ -28,6 +56,8 @@ def login():
         session["user"] = name
         session["mail"] = mail
 
+        
+
 
         # Flash message saying that the log in was successful
         flash("The login was successful!")
@@ -35,10 +65,12 @@ def login():
     else: 
 
         # In case that the user is already logged in redirect to user page
-        if "user" in session and "mail" in session:
+        if "user" in session and "mail" in session: 
 
+            name = session["user"]
             # Flashing message saying that there's a user in the page
-            flash(f"The user {name} is already logged in!")
+            flash("The user {} is already logged in!".format(name))
+            return redirect(url_for("user"))
         return render_template("login.html")
     
 
@@ -77,7 +109,7 @@ def user():
         # Flash message saying that no user is logged in
 
         flash("No user found in the server!")
-        return redirect(url_for("home"))
+        return redirect(url_for("login"))
 
 if __name__ == "__main__":
     app.run(debug=True)

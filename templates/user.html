@@ -5,6 +5,17 @@
         {{name}}'s page
     {% endblock %}
     {% block content %}
+
+    <!-- block to display the flashed messages -->
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            {{message}}
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
         <center>
             <h1>Welcome to {{name}}'s</h1>
         </center>
